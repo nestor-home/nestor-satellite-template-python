@@ -14,13 +14,13 @@ def no_pairing_in_the_environment(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_a_pairing_uri_gives_the_servers_address() -> None:
     satellite = build(
-        parse(["run", "--room", "salon", "--pairing-uri", "nestor+http://nestor.local:7860/?code=K7QF2M9X"])
+        parse(["run", "--room", "salon", "--pairing-uri", "nestor+http://nestor.local:8471/?code=K7QF2M9X"])
     )
-    assert satellite.core == "http://nestor.local:7860"
+    assert satellite.core == "http://nestor.local:8471"
 
 
 def test_it_declares_the_light_and_pairs_by_saying_its_code_on_the_speaker() -> None:
-    satellite = build(parse(["run", "--core", "http://nestor.local:7860", "--room", "salon", "--id", "enceinte"]))
+    satellite = build(parse(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--id", "enceinte"]))
     assert IDENTIFY in satellite.manifest.names
     assert satellite.manifest.device.id == "enceinte"
     assert PairingMethod.SPEECH in satellite.manifest.pairing_methods
@@ -34,5 +34,5 @@ def test_without_a_server_address_it_says_what_is_missing(capsys: pytest.Capture
 
 def test_a_malformed_enrollment_code_is_refused_before_anything_runs() -> None:
     with pytest.raises(SystemExit) as stopped:
-        main(["run", "--core", "http://nestor.local:7860", "--room", "salon", "--pairing-code", "nope", "--null-audio"])
+        main(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--pairing-code", "nope", "--null-audio"])
     assert str(stopped.value.code).startswith("my-satellite: ")
