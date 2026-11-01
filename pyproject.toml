@@ -14,7 +14,7 @@ authors = [{ name = "Your Name" }]
 requires-python = ">=3.12"
 dependencies = [
     # The SDK, with the machine's microphone and speaker (PortAudio).
-    "nestor-satellite[sounddevice]>=0.1,<0.2",
+    "nestor-satellite[sounddevice]>=0.2,<0.3",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
