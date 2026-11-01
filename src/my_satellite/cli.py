@@ -1,7 +1,7 @@
 """`my-satellite run`: this device as a satellite of a Nestor server.
 
-    my-satellite run --room salon --pairing-uri "nestor+http://nestor.local:7860/?code=K7QF2M9X"
-    my-satellite run --core http://nestor.local:7860 --room salon
+    my-satellite run --room salon --pairing-uri "nestor+http://nestor.local:8471/?code=K7QF2M9X"
+    my-satellite run --core http://nestor.local:8471 --room salon
 
 The first run pairs: with the pairing URI or enrollment code it is given (flags, or
 `NESTOR_PAIRING_URI` / `NESTOR_PAIRING_CODE`), else it says a device code on its speaker and logs
@@ -50,7 +50,7 @@ def parse(argv: Sequence[str] | None = None) -> argparse.Namespace:
     commands = parser.add_subparsers(dest="command", required=True)
     run = commands.add_parser("run", help="pair if needed, then stay connected")
     run.add_argument(
-        "--core", help="the server's voice address, e.g. http://nestor.local:7860 (default: the pairing URI's)"
+        "--core", help="the server's voice address, e.g. http://nestor.local:8471 (default: the pairing URI's)"
     )
     enrollment = run.add_mutually_exclusive_group()
     enrollment.add_argument("--pairing-uri", help="pair with this pairing URI (default: $NESTOR_PAIRING_URI)")
