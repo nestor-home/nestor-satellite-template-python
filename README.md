@@ -119,7 +119,7 @@ nestor-home. In your repository:
 ## Documentation
 
 - [Satellites](https://nestorhome.dev/docs/satellites/): capabilities and pairing.
-- [Protocol](https://nestorhome.dev/docs/satellites/protocol/): `nestor.satellite/2`, the standard.
+- [Protocol](https://nestorhome.dev/docs/satellites/protocol/): the standard satellites follow.
 - [Python SDK](https://nestorhome.dev/docs/sdks/python/): every option of `Satellite`.
 - [Conformance](https://nestorhome.dev/docs/satellites/conformance/).
 - A complete driver: [nestor-reachy](https://github.com/nestor-home/nestor-reachy).
