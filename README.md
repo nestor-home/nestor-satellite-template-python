@@ -2,8 +2,8 @@
 
 A working [Nestor](https://nestorhome.dev) satellite to start your own device from: a microphone,
 a speaker and a status light, on the [`nestor-satellite`](https://pypi.org/project/nestor-satellite/)
-SDK. It pairs with a Nestor server, streams audio both ways, shows the assistant's attitude and
-blinks when a person looks for it. Its CI runs the server's conformance suite on every change.
+SDK. It pairs with a Nestor server, holds one WebSocket link to it, streams audio both ways over
+WebRTC, prints the assistant's words, shows its attitude and blinks when a person looks for it. Its CI runs the server's conformance suite on every change.
 
 The light is printed: replace it with your hardware, and keep the rest.
 
@@ -69,12 +69,15 @@ it: type it in the admin, or `nestor satellites approve <code>` on the server.
 
 Look for `TODO(hardware)`:
 
-- `src/my_satellite/light.py`: the body. `behavior` (idle, listening, thinking, speaking) and
-  `identify` print; drive your LEDs, screen or motors there. Calls must return at once: keep the
-  state and animate from a task of your own.
+- `src/my_satellite/light.py`: the body. `behavior` (idle, listening, thinking, speaking),
+  `identify` and `show` (the assistant's words) print; drive your LEDs, screen or motors there.
+  Calls must return at once: keep the state and animate from a task of your own.
 - `src/my_satellite/cli.py`, `audio()`: the default microphone and speaker. Pick others with
   `device=`, or write an `AudioSource` / `AudioSink`.
-- `src/my_satellite/cli.py`, `build()`: the manifest. Declare only what the device has.
+- `src/my_satellite/cli.py`, `build()`: the manifest and the satellite. Declare only what the
+  body and sensors have; audio and text follow from what the satellite is given: `source`
+  (`audio.capture`), `sink` (`audio.playback`), `text_display` (`text.display`) and `text_input`
+  (`text.input`, then `satellite.send_text(…)`). Without a screen, drop `text_display`.
 
 | Capability                                     | Body method or SDK call                        |
 | ---------------------------------------------- | ---------------------------------------------- |
@@ -96,7 +99,7 @@ uv run pytest
 
 `pytest` includes the server's [conformance suite](https://nestorhome.dev/docs/satellites/conformance/),
 run through uvx at the version in `.nestor-version`: it launches `my-satellite run --null-audio`
-once per scenario and checks pairing, refused codes, identify, acks, audio and reconnection.
+once per scenario and checks pairing, refused codes, identify, acks, text, audio and reconnection.
 `pytest -m "not conformance"` skips it. CI runs both on every pull request.
 
 ## Release

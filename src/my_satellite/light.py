@@ -21,6 +21,11 @@ class Light(Body):
         # It is called while the device waits to be paired, and on `intent.identify` once paired.
         print("light: blink", flush=True)
 
+    def show(self, text: str, final: bool) -> None:
+        # TODO(hardware): the assistant's words, one message each (`final` on the last of a turn).
+        # Without a screen, drop `text_display=` in cli.py: the device then only speaks.
+        print(f"nestor: {text}", flush=True)
+
     def connected(self, up: bool) -> None:
         # TODO(hardware): a dim light when the link to the core is down, for instance.
         print(f"light: {'connected' if up else 'disconnected'}", flush=True)
