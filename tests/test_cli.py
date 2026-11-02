@@ -1,7 +1,7 @@
 """What a person types to run the satellite."""
 
 import pytest
-from nestor_satellite import IDENTIFY, PairingMethod
+from nestor_satellite import AUDIO_CAPTURE, AUDIO_PLAYBACK, IDENTIFY, TEXT_DISPLAY, PairingMethod
 
 from my_satellite.cli import build, main, parse
 
@@ -21,7 +21,7 @@ def test_a_pairing_uri_gives_the_servers_address() -> None:
 
 def test_it_declares_the_light_and_pairs_by_saying_its_code_on_the_speaker() -> None:
     satellite = build(parse(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--id", "enceinte"]))
-    assert IDENTIFY in satellite.manifest.names
+    assert satellite.manifest.names >= {IDENTIFY, AUDIO_CAPTURE, AUDIO_PLAYBACK, TEXT_DISPLAY}
     assert satellite.manifest.device.id == "enceinte"
     assert PairingMethod.SPEECH in satellite.manifest.pairing_methods
 
@@ -36,3 +36,9 @@ def test_a_malformed_enrollment_code_is_refused_before_anything_runs() -> None:
     with pytest.raises(SystemExit) as stopped:
         main(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--pairing-code", "nope", "--null-audio"])
     assert str(stopped.value.code).startswith("my-satellite: ")
+
+
+def test_without_a_sound_card_it_still_listens_and_speaks_to_the_core() -> None:
+    satellite = build(parse(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--null-audio"]))
+    assert satellite.manifest.names >= {AUDIO_CAPTURE, AUDIO_PLAYBACK}
+    assert PairingMethod.SPEECH in satellite.manifest.pairing_methods

@@ -19,8 +19,6 @@ import sys
 from collections.abc import Sequence
 
 from nestor_satellite import (
-    AUDIO_CAPTURE,
-    AUDIO_PLAYBACK,
     IDENTIFY,
     AudioSink,
     AudioSource,
@@ -66,24 +64,34 @@ def parse(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 def build(args: argparse.Namespace) -> Satellite:
     # IDENTIFY is the optional capability this example shows (Light.identify): declare only what
-    # the device really has. A microphone and a speaker are the minimum.
-    manifest = Manifest.of(Device(args.id, MODEL, args.room), AUDIO_CAPTURE, AUDIO_PLAYBACK, IDENTIFY)
+    # the device really has. Audio and text follow from what the satellite is given: the microphone
+    # (`source`), the speaker (`sink`), and `text_display` for the assistant's words.
+    manifest = Manifest.of(Device(args.id, MODEL, args.room), IDENTIFY)
     source, sink = audio(args.null_audio)
+    light = Light()
     return Satellite(
         args.core,
         manifest,
         tokens=TokenStore(args.token_file or f"~/.config/{NAME}/{args.id}.json"),
-        body=Light(),
+        body=light,
         source=source,
         sink=sink,
+        text_display=light.show,
         enrollment=args.pairing_uri or args.pairing_code,
         locale=args.lang,
     )
 
 
-def audio(null: bool) -> tuple[AudioSource, AudioSink | None]:
+class Discard(AudioSink):
+    """No speaker: the core's voice is dropped."""
+
+    async def write(self, pcm: bytes) -> None:
+        return None
+
+
+def audio(null: bool) -> tuple[AudioSource, AudioSink]:
     if null:
-        return SilenceSource(), None
+        return SilenceSource(), Discard()
     # TODO(hardware): the machine's default microphone and speaker, through PortAudio. Pass
     # `device=` to pick others, or write an AudioSource / AudioSink of your own (20 ms of 16-bit
     # mono PCM per read).
