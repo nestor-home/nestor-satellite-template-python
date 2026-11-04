@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/nestor-home/nestor-satellite-template-python/compare/v0.1.1...v0.2.0) (2026-11-04)
+
+
+### Features
+
+* name its own software and update from Nestor ([#10](https://github.com/nestor-home/nestor-satellite-template-python/issues/10)) ([8f23099](https://github.com/nestor-home/nestor-satellite-template-python/commit/8f23099d522667267ab4b5f05f21355b8a77f564))
+
 ## [0.1.1](https://github.com/nestor-home/nestor-satellite-template-python/compare/v0.1.0...v0.1.1) (2026-11-01)
 
 
