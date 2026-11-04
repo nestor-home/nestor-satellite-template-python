@@ -12,6 +12,7 @@ reconnect with it.
 import argparse
 import asyncio
 import contextlib
+import dataclasses
 import logging
 import re
 import socket
@@ -28,12 +29,13 @@ from nestor_satellite import (
     PairingFailed,
     Satellite,
     SilenceSource,
+    Software,
     TokenStore,
 )
 
 from my_satellite.light import Light
 
-NAME = "my-satellite"
+NAME = "my-satellite"  # the command, and the package as named on PyPI
 # TODO(rename): what your device is, declared to Nestor (a slug).
 MODEL = "my-satellite"
 
@@ -58,6 +60,9 @@ def parse(argv: Sequence[str] | None = None) -> argparse.Namespace:
     run.add_argument("--token-file", help=f"where the token is kept (default: ~/.config/{NAME}/<id>.json)")
     run.add_argument("--lang", help="the language it speaks to people, en or fr (default: the environment's)")
     run.add_argument("--null-audio", action="store_true", help="no sound card: send silence, drop the core's voice")
+    run.add_argument(
+        "--managed", action="store_true", help="a person can update it from Nestor (from PyPI, into this environment)"
+    )
     run.add_argument("-v", "--verbose", action="store_true")
     return parser.parse_args(argv)
 
@@ -65,10 +70,18 @@ def parse(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def build(args: argparse.Namespace) -> Satellite:
     # IDENTIFY is the optional capability this example shows (Light.identify): declare only what
     # the device really has. Audio and text follow from what the satellite is given: the microphone
-    # (`source`), the speaker (`sink`), and `text_display` for the assistant's words.
+    # (`source`), the speaker (`sink`), and `text_display` for the assistant's words. The manifest
+    # names this package, the software Nestor shows and updates.
     manifest = Manifest.of(Device(args.id, MODEL, args.room), IDENTIFY)
+    manifest = dataclasses.replace(manifest, software=Software.of(NAME))
     source, sink = audio(args.null_audio)
     light = Light()
+    updater = None
+    if args.managed:
+        # Newer versions come from PyPI, installed into this environment when a person asks.
+        from nestor_satellite.pypi import PypiUpdater
+
+        updater = PypiUpdater(NAME, module="my_satellite")
     return Satellite(
         args.core,
         manifest,
@@ -79,6 +92,7 @@ def build(args: argparse.Namespace) -> Satellite:
         text_display=light.show,
         enrollment=args.pairing_uri or args.pairing_code,
         locale=args.lang,
+        updater=updater,
     )
 
 

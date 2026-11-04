@@ -1,7 +1,7 @@
 """What a person types to run the satellite."""
 
 import pytest
-from nestor_satellite import AUDIO_CAPTURE, AUDIO_PLAYBACK, IDENTIFY, TEXT_DISPLAY, PairingMethod
+from nestor_satellite import AUDIO_CAPTURE, AUDIO_PLAYBACK, IDENTIFY, TEXT_DISPLAY, UPDATE, PairingMethod
 
 from my_satellite.cli import build, main, parse
 
@@ -42,3 +42,16 @@ def test_without_a_sound_card_it_still_listens_and_speaks_to_the_core() -> None:
     satellite = build(parse(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--null-audio"]))
     assert satellite.manifest.names >= {AUDIO_CAPTURE, AUDIO_PLAYBACK}
     assert PairingMethod.SPEECH in satellite.manifest.pairing_methods
+
+
+def test_it_names_its_own_package_to_nestor() -> None:
+    satellite = build(parse(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--null-audio"]))
+    assert satellite.manifest.software.name == "my-satellite"
+    assert UPDATE not in satellite.manifest.names
+
+
+def test_managed_it_can_be_updated_from_nestor() -> None:
+    satellite = build(
+        parse(["run", "--core", "http://nestor.local:8471", "--room", "salon", "--null-audio", "--managed"])
+    )
+    assert UPDATE in satellite.manifest.names
