@@ -34,7 +34,7 @@ grep -rn --exclude-dir=.venv -e my-satellite -e my_satellite .
 | Command               | `pyproject.toml`, `[project.scripts]`                                                                       |
 | Module                | `src/my_satellite/` (`git mv`), `module-name` in `pyproject.toml`, the imports, `tests/test_conformance.py` |
 | Model id              | `MODEL` in `src/my_satellite/cli.py`: what your device is, as a slug                                        |
-| Token folder, command | `NAME` in `src/my_satellite/cli.py`                                                                         |
+| Command, token folder | `NAME` in `src/my_satellite/cli.py`, also the package name Nestor shows and updates                         |
 | Release               | `package-name` and the `uv.lock` path in `release-please-config.json`                                       |
 
 Then `uv lock` and run the tests.
@@ -64,6 +64,12 @@ Run like this without a pairing URI, an unpaired device says a 6-digit code on i
 it: type it in the admin, or `nestor satellites approve <code>` on the server.
 `NESTOR_PAIRING_URI` works instead of `--pairing-uri`; `--null-audio` runs without a sound card;
 `uv run my-satellite run --help` lists the rest.
+
+The device tells Nestor its package and version (`my-satellite`, from `pyproject.toml`). With
+`--managed`, a person can update it from Nestor: it finds newer versions on PyPI, installs the one
+asked for into its environment, starts again on it, and goes back to the previous one if Nestor
+does not welcome it within a minute. Run it under a service manager, and publish it on PyPI first
+(see Release).
 
 ## Plug your hardware
 
