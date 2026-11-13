@@ -29,7 +29,7 @@ my-satellite = "my_satellite.cli:main"
 dev = [
     "pytest==9.2.0",
     "ruff==0.17.5",
-    "ty==0.0.100",
+    "ty==0.0.102",
 ]
 
 [tool.uv.build-backend]
