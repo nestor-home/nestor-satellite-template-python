@@ -13,6 +13,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     strategy:
       matrix:
         python: ["3.12", "3.13", "3.14"]
@@ -33,6 +34,7 @@ jobs:
     # The published server's black-box suite (`nestor satellites conformance`, version in
     # .nestor-version) against `my-satellite run`, without a sound card.
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.3
@@ -44,6 +46,7 @@ jobs:
     needs: [check, conformance]
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: exit 1
