@@ -106,7 +106,11 @@ uv run pytest
 `pytest` includes the server's [conformance suite](https://nestorhome.dev/docs/satellites/conformance/),
 run through uvx at the version in `.nestor-version`: it launches `my-satellite run --null-audio`
 once per scenario and checks pairing, refused codes, identify, acks, text, audio and reconnection.
-`pytest -m "not conformance"` skips it. CI runs both on every pull request.
+`pytest -m "not conformance"` skips it. CI runs both on every pull request. Tests run in random
+order (`pytest-randomly`); `pytest --randomly-seed=<seed>` replays the order a run printed.
+
+Once per clone, `uv run lefthook install` checks the pushed files with ruff, ty and `uv lock --check`
+before every `git push`.
 
 ## Release
 
