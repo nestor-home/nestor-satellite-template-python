@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/nestor-home/nestor-satellite-template-python/compare/v0.2.0...v0.2.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency nestor-satellite to &gt;=0.6,&lt;0.7 ([#29](https://github.com/nestor-home/nestor-satellite-template-python/issues/29)) ([1676b86](https://github.com/nestor-home/nestor-satellite-template-python/commit/1676b86ed5fdf4225e04ae1c898eee77500745f9))
+
 ## [0.2.0](https://github.com/nestor-home/nestor-satellite-template-python/compare/v0.1.1...v0.2.0) (2026-11-04)
 
 
