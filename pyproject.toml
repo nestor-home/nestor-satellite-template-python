@@ -27,7 +27,7 @@ my-satellite = "my_satellite.cli:main"
 
 [dependency-groups]
 dev = [
-    "lefthook==2.2.3",
+    "lefthook==2.2.4",
     "pytest==9.2.0",
     "pytest-randomly==5.1.0",
     "ruff==0.17.6",
